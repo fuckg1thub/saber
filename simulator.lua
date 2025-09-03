@@ -302,7 +302,16 @@ AutoFarm:CreateToggle({
 })
 
 AutoFarm:CreateToggle({
-    Name = "Auto Kill Golems",
+    Name = "Auto Kill Main Boss",
+    CurrentValue = false,
+    Flag = "Toggle1",
+    Callback = function(Value)
+        _G.autoKillBoss = Value
+    end,
+})
+
+AutoFarm:CreateToggle({
+    Name = "Auto Kill Element Golems",
     CurrentValue = false,
     Flag = "Toggle1",
     Callback = function(Value)
@@ -311,7 +320,7 @@ AutoFarm:CreateToggle({
 })
 
 AutoFarm:CreateToggle({
-    Name = "Auto Kill Boss",
+    Name = "Auto Kill Element Boss",
     CurrentValue = false,
     Flag = "Toggle1",
     Callback = function(Value)
@@ -352,9 +361,15 @@ Misc:CreateToggle({
     end
 })
 
+local function getMainBoss()
+    return workspace.Gameplay.Boss.BossHolder:FindFirstChild("Boss")
+end
+
 local capturingFlags = false
 local killingFireEnemies = false
+local killingMainBoss = false
 local function captureFlags()
+    if killingMainBoss then return end
     for i, v in pairs(workspace.Gameplay.Flags:GetChildren()) do
         if v:GetAttribute("OwnerName") ~= lplr.Name then
             local timeout = tick()
@@ -380,8 +395,8 @@ local function captureFlags()
                 root.CFrame = v.Base.CFrame + Vector3.new(0, _G.Y_TEST, 0)
                 root.Velocity = Vector3.zero
                 task.wait()
-            until isPersonNearby or (v:GetAttribute("OwnerName") == lplr.Name and tonumber(v:GetAttribute("CapValue")) == 10) or not _G.autoCapture or tick() - timeout >= 15
-            if tick() - timeout >= 15 then
+            until isPersonNearby or (v:GetAttribute("OwnerName") == lplr.Name and tonumber(v:GetAttribute("CapValue")) == 10) or not _G.autoCapture or tick() - timeout >= 25 or killingMainBoss
+            if tick() - timeout >= 25 then
                 Rayfield:Notify({
                     Title = "Skipped flag",
                     Content = "skipped flag #" .. i .. " because it seemed to be stuck",
@@ -396,7 +411,7 @@ local function doKOTH()
     local character = lplr.Character
     local root = character and character:FindFirstChild("HumanoidRootPart")
     if not root then return end
-    if capturingFlags or killingFireEnemies then return end
+    if capturingFlags or killingFireEnemies or killingMainBoss then return end
     root.CFrame = workspace.Gameplay.KOTH.KOH_BOUNDARY.CFrame + Vector3.new(0, _G.Y_TEST, 0)
     root.Velocity = Vector3.zero
 end
@@ -416,7 +431,7 @@ local function killEnemies(name)
                 root.Velocity = Vector3.zero
                 swing()
                 task.wait()
-            until not _G.autoKillGolems or not table.find(killEnemiesTable, name)
+            until not _G.autoKillGolems or not table.find(killEnemiesTable, name) or killingMainBoss
         end
         killingFireEnemies = false
     end
@@ -438,8 +453,29 @@ local function killBoss(name)
                 swing()
             end
             task.wait()
-        until not _G.autoKillFireBoss or not table.find(killEnemiesTable, name)
+        until not _G.autoKillFireBoss or not table.find(killEnemiesTable, name) or killingMainBoss
         killingFireEnemies = false
+    end
+end
+local function killMainBoss()
+    local boss = getMainBoss()
+    if boss then
+        killingMainBoss = true
+        local character = lplr.Character
+        local root = character and character:FindFirstChild("HumanoidRootPart")
+        if root then
+            repeat
+                root.CFrame = boss.HumanoidRootPart.CFrame
+                root.Velocity = Vector3.zero
+                if not _G.autoSwing then
+                    swing()
+                end
+                task.wait()
+            until not getMainBoss() or not _G.autoKillBoss
+            killingMainBoss = false
+        end
+    else
+        killingMainBoss = false
     end
 end
 task.spawn(function()
@@ -447,8 +483,7 @@ task.spawn(function()
         local character = lplr.Character
         local root = character and character:FindFirstChild("HumanoidRootPart")
         if root then
-            local autoCapture, autoKOTH, autoKill, autoBoss = _G.autoCapture, _G.autoKingOfTheHill, _G.autoKillGolems,
-                _G.autoKillFireBoss
+            local autoCapture, autoKOTH, autoKill, autoBoss, autoMBoss = _G.autoCapture, _G.autoKingOfTheHill, _G.autoKillGolems, _G.autoKillFireBoss, _G.autoKillBoss
             if autoCapture then
                 captureFlags()
             end
@@ -464,6 +499,9 @@ task.spawn(function()
                 for i, v in pairs(killEnemiesTable) do
                     killBoss(v)
                 end
+            end
+            if autoMBoss then
+                killMainBoss()
             end
         end
         task.wait()
