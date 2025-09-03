@@ -1,5 +1,3 @@
--- ok yeah i just open sourced this shit because why not have fun skidding u (probably)loser
-
 _G.Y_TEST = 5
 local cheatEngine = string.find(identifyexecutor():lower(), "xeno") or string.find(identifyexecutor():lower(), "solara") or string.find(identifyexecutor():lower(), "nezur") or string.find(identifyexecutor():lower(), "jj")
 if cheatEngine then
@@ -382,8 +380,8 @@ local function captureFlags()
                 root.CFrame = v.Base.CFrame + Vector3.new(0, _G.Y_TEST, 0)
                 root.Velocity = Vector3.zero
                 task.wait()
-            until isPersonNearby or (v:GetAttribute("OwnerName") == lplr.Name and tonumber(v:GetAttribute("CapValue")) == 10) or not _G.autoCapture or tick() - timeout >= 30
-            if tick() - timeout >= 10 then
+            until isPersonNearby or (v:GetAttribute("OwnerName") == lplr.Name and tonumber(v:GetAttribute("CapValue")) == 10) or not _G.autoCapture or tick() - timeout >= 15
+            if tick() - timeout >= 15 then
                 Rayfield:Notify({
                     Title = "Skipped flag",
                     Content = "skipped flag #" .. i .. " because it seemed to be stuck",
@@ -471,4 +469,3 @@ task.spawn(function()
         task.wait()
     end
 end)
-
