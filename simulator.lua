@@ -1,8 +1,7 @@
 -- ok yeah i just open sourced this shit because why not have fun skidding u (probably)loser
 
 _G.Y_TEST = 5
-local cheatEngine = string.find(identifyexecutor():lower(), "xeno") or string.find(identifyexecutor():lower(), "solara") or
-string.find(identifyexecutor():lower(), "nezur") or string.find(identifyexecutor():lower(), "jj")
+local cheatEngine = string.find(identifyexecutor():lower(), "xeno") or string.find(identifyexecutor():lower(), "solara") or string.find(identifyexecutor():lower(), "nezur") or string.find(identifyexecutor():lower(), "jj")
 if cheatEngine then
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "executor",
@@ -165,7 +164,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoCrowns = Value
         task.spawn(function()
-            while _G.autoCrowns and task.wait() do
+            while _G.autoCrowns and task.wait(2) do
                 local _, res = pcall(collectCrowns)
                 if res and res:find("new overlap in different world") then
                     print("fuck you")
@@ -181,7 +180,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoDailyRewards = Value
         task.spawn(function()
-            while _G.autoDailyRewards and task.wait() do
+            while _G.autoDailyRewards and task.wait(2) do
                 claimDailyReward()
             end
         end)
@@ -195,7 +194,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoBuySabers = Value
         task.spawn(function()
-            while _G.autoBuySabers and task.wait() do
+            while _G.autoBuySabers and task.wait(2) do
                 buyBestSabers()
             end
         end)
@@ -209,7 +208,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoBuyDna = Value
         task.spawn(function()
-            while _G.autoBuyDna and task.wait() do
+            while _G.autoBuyDna and task.wait(2) do
                 buyBestDNA()
             end
         end)
@@ -223,7 +222,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoBuyHits = Value
         task.spawn(function()
-            while _G.autoBuyHits and task.wait() do
+            while _G.autoBuyHits and task.wait(2) do
                 buyBossHits()
             end
         end)
@@ -251,7 +250,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoBuyAUra = Value
         task.spawn(function()
-            while _G.autoBuyAUra and task.wait() do
+            while _G.autoBuyAUra and task.wait(2) do
                 buyAuras()
             end
         end)
@@ -265,7 +264,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoBuyPetAura = Value
         task.spawn(function()
-            while _G.autoBuyPetAura and task.wait() do
+            while _G.autoBuyPetAura and task.wait(2) do
                 buyPetAuras()
             end
         end)
@@ -279,7 +278,7 @@ AutoFarm:CreateToggle({
     Callback = function(Value)
         _G.autoEquipBest = Value
         task.spawn(function()
-            while _G.autoEquipBest and task.wait() do
+            while _G.autoEquipBest and task.wait(2) do
                 equipBestPets()
             end
         end)
@@ -472,3 +471,4 @@ task.spawn(function()
         task.wait()
     end
 end)
+
